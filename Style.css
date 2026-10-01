@@ -1,0 +1,104 @@
+/* =========================================================
+   CSS VARIABLES – GEN‑Z DARK THEME
+   ========================================================= */
+:root {
+  --bg-dark:       #0a0a0f;
+  --card-dark:     #13131a;
+  --glass:         rgba(255,255,255,0.05);
+  --neon-purple:   #a855f7;
+  --neon-cyan:     #06b6d4;
+  --neon-pink:     #ec4899;
+  --text-white:    #f8fafc;
+  --text-muted:    #64748b;
+  --success:       #22c55e;
+  --warning:       #f59e0b;
+  --danger:        #ef4444;
+}
+
+/* Light mode overrides */
+body.light-mode {
+  --bg-dark:       #f5f5f5;
+  --card-dark:     #ffffff;
+  --glass:         rgba(0,0,0,0.05);
+  --text-white:    #111827;
+  --text-muted:    #6b7280;
+}
+
+/* =========================================================
+   GLOBAL STYLES
+   ========================================================= */
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; font-family:'Inter',sans-serif; background:var(--bg-dark); color:var(--text-white);}
+a { color:inherit; text-decoration:none; }
+ul { list-style:none; }
+button { cursor:pointer; font-family:inherit;}
+
+/* ==== FLEX CONTAINER – SIDEBAR + MAIN ==== */
+.app { display:flex; height:100vh; overflow:hidden; }
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+.sidebar {
+  width:260px; background:var(--card-dark); display:flex; flex-direction:column;
+  padding:1rem; gap:1.5rem; position:relative;
+  transition:width .3s ease;
+}
+.sidebar.collapsed { width:80px; }
+.sidebar .logo { font-family:'Space Grotesk',sans-serif; font-size:1.3rem; text-align:center; color:var(--neon-cyan);}
+.sidebar nav a { display:flex; align-items:center; gap:.75rem; padding:.75rem 1rem;
+                border-radius:12px; color:var(--text-muted);
+                transition:all .3s ease;}
+.sidebar nav a.active,
+.sidebar nav a:hover { background:var(--glass); color:var(--text-white);
+                       border:1px solid var(--neon-cyan); }
+.sidebar nav i { width:24px; text-align:center;}
+
+/* ==== XP BAR ==== */
+.xp-bar {
+  margin-top:auto; padding:1rem; background:var(--glass); border-radius:12px;
+}
+.xp-bar .level { font-size:.9rem; margin-bottom:.4rem; }
+.xp-bar .progress { height:6px; background:var(--card-dark); border-radius:4px; overflow:hidden; }
+.xp-bar .progress div { height:100%; width:0%; background:var(--neon-purple);
+                        transition:width .4s ease; }
+
+/* =========================================================
+   MAIN CONTENT & SECTION SWITCHING
+   ========================================================= */
+.main { flex:1; overflow-y:auto; padding:1.5rem; }
+.section { display:none; animation:fadeIn .5s forwards; }
+.section.active { display:block; }
+
+/* ==== CARD BASE ==== */
+.card {
+  background:var(--glass); border-radius:18px; padding:1rem;
+  backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.08);
+  transition:all .3s ease;
+}
+.card:hover { transform:translateY(-4px); box-shadow:0 8px 16px rgba(0,0,0,.3); }
+
+/* ==== QUICK STAT CARD ==== */
+.stat-card i { font-size:2rem; }
+.stat-card .value { font-size:2.2rem; font-weight:600; margin-top:.2rem; }
+.stat-card .label { font-size:.85rem; color:var(--text-muted); }
+
+/* ==== TOASTS ==== */
+#toast { position:fixed; bottom:1rem; right:1rem; z-index:1000; }
+.toast {
+  background:var(--card-dark); color:var(--text-white); padding:.8rem 1.2rem;
+  border-radius:8px; margin-top:.5rem; opacity:0; animation:fadeIn .4s forwards;
+}
+
+/* ==== LIGHT/DARK TOGGLE ==== */
+#themeToggle { position:absolute; top:1rem; right:1rem; background:none; border:none;
+               color:var(--text-white); font-size:1.4rem; }
+
+/* ==== RESPONSIVE ==== */
+@media (max-width:768px){
+  .sidebar { width:80px; }
+  .sidebar:not(.collapsed) nav a span{display:none;}
+}
+
+/* ==== KEYFRAMES ==== */
+@keyframes fadeIn { from{opacity:0; transform:scale(0.98);} to{opacity:1; transform:scale(1);} }
