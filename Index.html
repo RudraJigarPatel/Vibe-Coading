@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Life Dashboard</title>
+
+<!-- ==== CDNs ==== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap"
+      rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-... (truncated)" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light-mode"> <!-- remove class to start in dark mode; toggle switches it -->
+<div class="app">
+  <!-- ====================== SIDEBAR ====================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">Campus<span style="color:var(--neon-cyan);">⚡</span></div>
+    <nav>
+      <a href="#" data-section="dashboard" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+      <a href="#" data-section="cgpa"><i class="fa-solid fa-graduation-cap"></i><span>CGPA</span></a>
+      <a href="#" data-section="attendance"><i class="fa-solid fa-chart-simple"></i><span>Attendance</span></a>
+      <a href="#" data-section="timetable"><i class="fa-solid fa-calendar-days"></i><span>Timetable</span></a>
+      <a href="#" data-section="tasks"><i class="fa-solid fa-list-check"></i><span>Tasks</span></a>
+      <a href="#" data-section="events"><i class="fa-solid fa-bullhorn"></i><span>Events</span></a>
+      <a href="#" data-section="pomodoro"><i class="fa-solid fa-stopwatch"></i><span>Pomodoro</span></a>
+      <a href="#" data-section="vibe"><i class="fa-solid fa-heart"></i><span>Vibe</span></a>
+    </nav>
+    <button id="themeToggle" title="Toggle light/dark"><i class="fa-solid fa-circle-half-stroke"></i></button>
+
+    <div class="xp-bar">
+      <div class="level">Level 5 Campus Explorer ⚡</div>
+      <div class="progress"><div id="xpFill" style="width:45%;"></div></div>
+    </div>
+
+    <div class="semester-progress">
+      <div>Semester Progress: Week 8 of 20</div>
+      <div class="progress"><div style="width:40%; background:var(--neon-pink);"></div></div>
+    </div>
+  </aside>
+
+  <!-- ====================== MAIN ====================== -->
+  <main class="main" id="main">
+    <!-- ---------- SECTION 1 – DASHBOARD ---------- -->
+    <section id="dashboard" class="section active">
+      <h1 id="greeting" style="font-family:'Space Grotesk',sans-serif;"></h1>
+      <div id="clock" style="font-size:2rem;margin: .5rem 0;"></div>
+      <div id="date" style="color:var(--text-muted);margin-bottom:1rem;"></div>
+
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;">
+        <div class="card stat-card"><i class="fa-solid fa-star"></i>
+          <div class="value">7.8</div><div class="label">CGPA</div></div>
+        <div class="card stat-card"><i class="fa-solid fa-user-check"></i>
+          <div class="value">82%</div><div class="label">Attendance</div></div>
+        <div class="card stat-card"><i class="fa-solid fa-tasks"></i>
+          <div class="value">3</div><div class="label">Pending Tasks</div></div>
+        <div class="card stat-card"><i class="fa-solid fa-chalkboard-user"></i>
+          <div class="value">Math - 10:30 AM</div><div class="label">Next Class</div></div>
+      </div>
+
+      <p id="quote" style="margin-top:2rem;font-style:italic;color:var(--neon-pink);"></p>
+    </section>
+
+    <!-- ---------- SECTION 2 – CGPA CALCULATOR ---------- -->
+    <section id="cgpa" class="section">
+      <h2>CGPA Calculator</h2>
+      <div id="cgpaForm">
+        <table id="subjectTable" style="width:100%;border-collapse:collapse;">
+          <thead><tr><th>Subject</th><th>Grade</th><th>Credits</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <button id="addRowBtn"><i class="fa-solid fa-plus"></i> Add Subject</button>
+        <button id="calcBtn"><i class="fa-solid fa-calculator"></i> Calculate CGPA</button>
+      </div>
+      <h3 id="cgpaResult" style="margin-top:1rem;"></h3>
+      <canvas id="gradeChart" width="300" height="300" style="margin-top:1rem;"></canvas>
+      <p id="bunkPredict" style="margin-top:.5rem;"></p>
+    </section>
+
+    <!-- ---------- SECTION 3 – ATTENDANCE TRACKER ---------- -->
+    <section id="attendance" class="section">
+      <h2>Attendance Tracker</h2>
+      <div id="attendanceAlert"></div>
+      <div class="grid" id="attendanceGrid"
+           style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;"></div>
+    </section>
+
+    <!-- ---------- SECTION 4 – TIMETABLE ---------- -->
+    <section id="timetable" class="section">
+      <h2>Timetable</h2>
+      <div id="todayStrip" style="margin-bottom:1rem;"></div>
+      <div id="timetableGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;"></div>
+      <div id="modalOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+           background:rgba(0,0,0,.6);justify-content:center;align-items:center;">
+        <div class="card" style="max-width:400px;padding:2rem;position:relative;">
+          <button id="closeModal" style="position:absolute;top:.5rem;right:.5rem;background:none;border:none;color:var(--text-white);font-size:1.2rem;">✖</button>
+          <div id="modalContent"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SECTION 5 – ASSIGNMENT TRACKER (Kanban) ---------- -->
+    <section id="tasks" class="section">
+      <h2>Assignment Tracker</h2>
+      <div class="grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+        <div class="card" data-status="todo"><h3>To‑Do <span class="badge" id="todoCount">0</span></h3><button class="addTaskBtn">Add Task</button><div class="taskList"></div></div>
+        <div class="card" data-status="progress"><h3>In Progress <span class="badge" id="progCount">0</span></h3><button class="addTaskBtn">Add Task</button><div class="taskList"></div></div>
+        <div class="card" data-status="done"><h3>Done ✅ <span class="badge" id="doneCount">0</span></h3><button class="addTaskBtn">Add Task</button><div class="taskList"></div></div>
+      </div>
+    </section>
+
+    <!-- ---------- SECTION 6 – CAMPUS EVENT FEED ---------- -->
+    <section id="events" class="section">
+      <h2>Campus Events</h2>
+      <div id="eventTabs" style="margin-bottom:1rem;">
+        <button class="tab active" data-filter="all">All</button>
+        <button class="tab" data-filter="tech">Tech</button>
+        <button class="tab" data-filter="cultural">Cultural</button>
+        <button class="tab" data-filter="sports">Sports</button>
+        <button class="tab" data-filter="workshop">Workshop</button>
+      </div>
+      <div id="eventCards" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;"></div>
+      <h3>Event Log</h3>
+      <ul id="eventLog"></ul>
+    </section>
+
+    <!-- ---------- SECTION 7 – POMODORO STUDY TIMER ---------- -->
+    <section id="pomodoro" class="section">
+      <h2>Pomodoro Timer</h2>
+      <div id="pomodoroTimer" style="font-size:4rem;margin:1rem 0;"></div>
+      <div>
+        <button class="modeBtn" data-mode="focus">Focus (25 min)</button>
+        <button class="modeBtn" data-mode="short">Short Break (5 min)</button>
+        <button class="modeBtn" data-mode="long">Long Break (15 min)</button>
+      </div>
+      <div style="margin-top:.5rem;">
+        <button id="startBtn"><i class="fa-solid fa-play"></i></button>
+        <button id="pauseBtn"><i class="fa-solid fa-pause"></i></button>
+        <button id="resetBtn"><i class="fa-solid fa-rotate-left"></i></button>
+      </div>
+      <p id="sessionLog" style="margin-top:1rem;"></p>
+      <p id="motivationMsg"></p>
+    </section>
+
+    <!-- ---------- SECTION 8 – DAILY VIBE CHECK ---------- -->
+    <section id="vibe" class="section">
+      <h2>How are you feeling today?</h2>
+      <div id="emojiButtons" style="display:flex;gap:1rem;margin:1rem 0;">
+        <button class="emojiBtn">😴</button>
+        <button class="emojiBtn">😐</button>
+        <button class="emojiBtn">😊</button>
+        <button class="emojiBtn">🔥</button>
+        <button class="emojiBtn">💀</button>
+      </div>
+      <p id="vibeMessage"></p>
+      <div id="weeklyMood" style="display:flex;gap:.4rem;margin-top:1rem;"></div>
+      <p id="streak"></p>
+    </section>
+
+    <!-- ==== TOAST CONTAINER ==== -->
+    <div id="toast"></div>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
